@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.storage.CacheResetOnProcessCanceled.enabled
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,7 +8,6 @@ plugins {
 android {
     namespace = "com.example.timeapp"
     compileSdk = 35
-
     defaultConfig {
         applicationId = "com.example.timeapp"
         minSdk = 29
@@ -26,6 +27,9 @@ android {
             )
         }
     }
+    buildFeatures {
+        viewBinding = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -36,6 +40,8 @@ android {
 }
 
 dependencies {
+    implementation (libs.androidx.lifecycle.viewmodel.ktx)
+
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
