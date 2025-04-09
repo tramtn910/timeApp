@@ -7,23 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.example.timeapp.data.TimerRepositoryImpl
 import com.example.timeapp.databinding.ActivityTimerBinding
-import com.example.timeapp.domain.TimerUseCase
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class TimerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTimerBinding
-
-    private val viewModel: TimerViewModel by viewModels {
-        val useCase = TimerUseCase(TimerRepositoryImpl())
-        object : androidx.lifecycle.ViewModelProvider.Factory {
-            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
-                return TimerViewModel(useCase) as T
-            }
-        }
-    }
+    private val viewModel: TimerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

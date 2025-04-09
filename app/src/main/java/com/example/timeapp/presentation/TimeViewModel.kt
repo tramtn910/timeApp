@@ -2,17 +2,20 @@ package com.example.timeapp.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.timeapp.domain.TimerState
 import com.example.timeapp.domain.TimerUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TimerViewModel(private val useCase: TimerUseCase) : ViewModel() {
+@HiltViewModel
+class TimerViewModel @Inject constructor(
+    private val useCase: TimerUseCase
+) : ViewModel() {
     private val _viewState = MutableStateFlow(TimerViewState.initial())
     val viewState: StateFlow<TimerViewState> = _viewState
 

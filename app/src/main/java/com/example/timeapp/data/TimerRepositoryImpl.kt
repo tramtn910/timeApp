@@ -11,8 +11,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TimerRepositoryImpl : TimerRepository {
+class TimerRepositoryImpl @Inject constructor() : TimerRepository {
     private val scope = CoroutineScope(Dispatchers.Default)
     private var timerJob: Job? = null
     private var currentTime = 0L
