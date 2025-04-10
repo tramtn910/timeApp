@@ -6,12 +6,16 @@ import com.example.timeapp.mvi.MviViewState
 
 data class TimerViewState(
     val time: Long,
-    val isRunning: Boolean
+    val isRunning: Boolean,
+    val currentTime: String = "",
+    val timeZone: String = ""
 ) : MviViewState {
     companion object {
         fun initial() = TimerViewState(
             0L,
-            false
+            false,
+            "",
+            ""
         )
     }
 }
@@ -21,6 +25,7 @@ sealed interface TimerIntent : MviIntent {
     object Stop : TimerIntent
     object Reset : TimerIntent
     object Resume : TimerIntent
+    object GetCurrentTime : TimerIntent
 }
 
 sealed interface TimerEvent : MviSingleEvent {
@@ -28,4 +33,6 @@ sealed interface TimerEvent : MviSingleEvent {
     object ShowTimerStopToast : TimerEvent
     object ShowTimerResetToast : TimerEvent
     object ShowTimerResumeToast : TimerEvent
+    object ShowCurrentTimeToast : TimerEvent
+    data class ShowErrorToast(val message: String) : TimerEvent
 }

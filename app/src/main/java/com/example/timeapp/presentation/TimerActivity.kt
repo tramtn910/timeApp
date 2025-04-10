@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.timeapp.databinding.ActivityTimerBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -27,14 +28,22 @@ class TimerActivity : AppCompatActivity() {
         setupClickListeners()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.processIntent(TimerIntent.GetCurrentTime)
+    }
+
     private fun observeState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.viewState.collect { state ->
+                viewModel.viewState.collectLatest { state ->
                     binding.textTime.text = (state.time / 1000).toString()
-                    binding.btnStart.isEnabled = !state.isRunning
-                    binding.btnStop.isEnabled = state.isRunning
-                    binding.btnResume.isEnabled = !state.isRunning && state.time > 0
+                    binding.textCurrentTime.text = if (state.currentTime.isNotEmpty()) {
+                        "${state.currentTime} (${state.timeZone})"
+                    } else {
+                        "Loading time..."
+                    }
+                    updateButtonsState(state)
                 }
             }
         }
@@ -43,35 +52,14 @@ class TimerActivity : AppCompatActivity() {
     private fun observeEvent() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.event.collect { event ->
+                viewModel.event.collectLatest { event ->
                     when (event) {
-                        is TimerEvent.ShowTimerStartToast ->
-                            Toast.makeText(
-                                this@TimerActivity,
-                                "Timer Started",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                        is TimerEvent.ShowTimerStopToast ->
-                            Toast.makeText(
-                                this@TimerActivity,
-                                "Timer Stopped",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                        is TimerEvent.ShowTimerResetToast ->
-                            Toast.makeText(
-                                this@TimerActivity,
-                                "Timer Reset",
-                                Toast.LENGTH_SHORT
-                            ).show()
-
-                        is TimerEvent.ShowTimerResumeToast ->
-                            Toast.makeText(
-                                this@TimerActivity,
-                                "Timer Resumed",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        is TimerEvent.ShowTimerStartToast -> showToast("Timer Started")
+                        is TimerEvent.ShowTimerStopToast -> showToast("Timer Stopped")
+                        is TimerEvent.ShowTimerResetToast -> showToast("Timer Reset")
+                        is TimerEvent.ShowTimerResumeToast -> showToast("Timer Resumed")
+                        is TimerEvent.ShowCurrentTimeToast -> showToast("Current Time Updated")
+                        is TimerEvent.ShowErrorToast -> showToast(event.message)
                     }
                 }
             }
@@ -91,5 +79,15 @@ class TimerActivity : AppCompatActivity() {
         binding.btnResume.setOnClickListener {
             viewModel.processIntent(TimerIntent.Resume)
         }
+    }
+
+    private fun updateButtonsState(state: TimerViewState) {
+        binding.btnStart.isEnabled = !state.isRunning
+        binding.btnStop.isEnabled = state.isRunning
+        binding.btnResume.isEnabled = !state.isRunning && state.time > 0
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
