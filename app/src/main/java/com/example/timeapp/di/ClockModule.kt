@@ -1,7 +1,7 @@
 package com.example.timeapp.di
 
-import com.example.timeapp.data.TimerRepositoryImpl
-import com.example.timeapp.domain.TimerRepository
+import com.example.timeapp.data.ClockRepositoryImpl
+import com.example.timeapp.domain.ClockRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -10,10 +10,11 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class TimerModule {
+abstract class ClockModule {
+
     @Binds
     @Singleton
-    abstract fun bindTimerRepository(
-        timerRepositoryImpl: TimerRepositoryImpl
-    ): TimerRepository
+    abstract fun bindClockRepository(
+        impl: ClockRepositoryImpl
+    ): ClockRepository
 }
