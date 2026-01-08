@@ -6,8 +6,13 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class DownloadActivity : ComponentActivity() {
     private val viewModel: DownloadViewModel by viewModels()
 
@@ -17,7 +22,10 @@ class DownloadActivity : ComponentActivity() {
         Log.d("CHECK", "DownloadActivity onCreate called!")
 
         setContent {
-            MaterialTheme {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
                 DownloadScreen(viewModel = viewModel)
             }
         }

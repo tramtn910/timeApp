@@ -1,9 +1,12 @@
 package com.example.timeapp.presentation.downloader
 
+import android.content.Context
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -16,9 +19,12 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-
-class DownloadViewModel : ViewModel() {
+@HiltViewModel
+class DownloadViewModel @Inject constructor(
+    @ApplicationContext private val context: Context
+) : ViewModel() {
     private val TAG = "DownloadViewModel"
 
     private val okHttpClient = OkHttpClient.Builder()
@@ -37,10 +43,12 @@ class DownloadViewModel : ViewModel() {
             val safeTitle = title.ifBlank { "video_${System.currentTimeMillis()}" }
             val fileName = "$safeTitle.mp4"
 
-            val downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+            val downloadDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                ?: context.filesDir
+
             if (!downloadDir.exists()) {
                 downloadDir.mkdirs()
-                Log.d(TAG, "Created Downloads directory")
+                Log.d(TAG, "Created download directory: ${downloadDir.absolutePath}")
             }
 
             val file = File(downloadDir, fileName)

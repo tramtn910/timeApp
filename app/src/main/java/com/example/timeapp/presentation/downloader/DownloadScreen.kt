@@ -1,5 +1,6 @@
 package com.example.timeapp.presentation.downloader
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -79,7 +80,9 @@ fun DownloadScreen(
         item {
             Button(
                 onClick = {
+                    Log.d("DEBUG_BUTTON", "TEST DOWNLOAD BUTTON PRESSED!!!")
                     viewModel.startDownload(
+
                         url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
                         title = "video title",
                         thumbnailUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg"
@@ -87,7 +90,7 @@ fun DownloadScreen(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("test download")
+                Text("test downloadnnnnnn")
             }
         }
     }
